@@ -80,7 +80,7 @@ protected:
       &BtAction<ActionT>::feedback_callback, this, _1, _2);
 
     send_goal_options.result_callback = std::bind(&BtAction<ActionT>::result_callback, this, _1);
-    RCLCPP_INFO(_node->get_logger(), "Sending goal to " + _server_name);
+    RCLCPP_INFO_STREAM(_node->get_logger(), "Sending goal to " << _server_name);
 
     auto goal_handle_future = _action_client->async_send_goal(goal, send_goal_options);
     if (rclcpp::spin_until_future_complete(_node, goal_handle_future, _server_timeout) !=

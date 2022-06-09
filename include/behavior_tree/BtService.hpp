@@ -40,7 +40,7 @@ protected:
   typename rclcpp::Client<ServiceT>::SharedPtr _client;
 
   /// State variables
-  std::shared_future<typename ServiceT::Response::SharedPtr> _future_response;
+//  std::shared_future<typename ServiceT::Response::SharedPtr> _future_response;
   BT::NodeStatus _result;
 
   /// Port inputs
@@ -103,7 +103,7 @@ public:
         auto result = future.get();
         _result = handle_response(result);
       };
-      _future_response = _client->async_send_request(request, response_received_callback);
+      auto future_response = _client->async_send_request(request, response_received_callback);
       _result = BT::NodeStatus::RUNNING;
     }
     rclcpp::spin_some(_node);

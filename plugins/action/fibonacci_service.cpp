@@ -20,7 +20,7 @@ public:
 
   BT::NodeStatus handle_response(FibonacciService::Response::SharedPtr response) override
   {
-    RCLCPP_INFO(_node->get_logger(),  "Service call complete: " + response->message);
+    RCLCPP_INFO_STREAM(_node->get_logger(),  "Service call complete: " << response->message);
     return BT::NodeStatus::SUCCESS;
   }
 };
