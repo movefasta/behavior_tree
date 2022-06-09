@@ -40,6 +40,7 @@ protected:
   typename rclcpp::Client<ServiceT>::SharedPtr _client;
 
   /// State variables
+  typename rclcpp::Client<ServiceT>::SharedFuture _future_response;
 //  std::shared_future<typename ServiceT::Response::SharedPtr> _future_response;
   BT::NodeStatus _result;
 
@@ -99,14 +100,15 @@ public:
       }
       typename ServiceT::Request::SharedPtr request = populate_request();
 
-      auto response_received_callback = [this](typename rclcpp::Client<ServiceT>::SharedFuture future) {
-        auto result = future.get();
-        _result = handle_response(result);
-      };
-      auto future_response = _client->async_send_request(request, response_received_callback);
+      _future_response = _client->async_send_request(request).share();
       _result = BT::NodeStatus::RUNNING;
     }
-    rclcpp::spin_some(_node);
+    if(rclcpp::spin_until_future_complete(_node, _future_response) == rclcpp::FutureReturnCode::SUCCESS){
+        _result = handle_response(_future_response.get());
+    }
+    else{
+        _result = BT::NodeStatus::FAILURE;
+    }
     return _result;
   }
 }; // class BtService
