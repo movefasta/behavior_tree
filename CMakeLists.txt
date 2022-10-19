@@ -28,6 +28,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
+find_package(example_interfaces REQUIRED)
 
 
 set(dependencies
@@ -37,6 +38,7 @@ set(dependencies
   geometry_msgs
   nav_msgs
   std_msgs
+  example_interfaces
   )
 
 add_executable(bt_engine src/BtEngine.cpp)
