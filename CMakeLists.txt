@@ -37,7 +37,6 @@ set(dependencies
   geometry_msgs
   nav_msgs
   std_msgs
-  example_interfaces
   )
 
 add_executable(bt_engine src/BtEngine.cpp)
