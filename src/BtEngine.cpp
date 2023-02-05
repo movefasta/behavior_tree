@@ -14,7 +14,11 @@ BtEngine::BtEngine()
   if (run_groot_monitoring_) {
     add_groot_monitoring();
   }
-  run();
+  if (run_loop_) {
+    run_loop();
+  } else {
+    run();
+  }
 }
 
 void BtEngine::configure_parameters()
@@ -24,6 +28,7 @@ void BtEngine::configure_parameters()
   plugins_ = this->declare_parameter("plugins", std::vector<std::string>());
   // Groot
   run_groot_monitoring_ = this->declare_parameter("run_groot_monitoring", true);
+  run_loop_ = this->declare_parameter("run_loop", false);
   publisher_port_ = this->declare_parameter("publisher_port", 1666);
   server_port_ = this->declare_parameter("server_port", 1667);
   max_msg_per_second_ = this->declare_parameter("max_msg_per_second", 25);
@@ -40,14 +45,23 @@ void BtEngine::load_tree()
 
 void BtEngine::run()
 {
-  rclcpp::WallRate loop_rate(loop_timeout_);
-  RCLCPP_INFO_STREAM(
+    if (rclcpp::ok()) {
+        tree_->tickRootWhileRunning();
+    } else {
+        RCLCPP_ERROR(this->get_logger(), "Run ROS2 before start");
+    }
+}
+
+void BtEngine::run_loop()
+{
+    rclcpp::WallRate loop_rate(loop_timeout_);
+    RCLCPP_INFO_STREAM(
     this->get_logger(), "Running tree at frequency " <<
-      1.0 / loop_timeout_.count() * 1e3 << "Hz");
-  while (rclcpp::ok()) {
-    tree_->tickRoot();
-    loop_rate.sleep();
-  }
+        1.0 / loop_timeout_.count() * 1e3 << "Hz");
+    while (rclcpp::ok()) {
+        tree_->tickRoot();
+        loop_rate.sleep();
+    }
 }
 
 void BtEngine::add_groot_monitoring()

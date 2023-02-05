@@ -26,6 +26,7 @@ class BtEngine : public rclcpp::Node
   std::string bt_file_path_;
   std::chrono::milliseconds loop_timeout_{};
   std::vector<std::string> plugins_;
+  bool run_loop_{};
   // Groot
   bool run_groot_monitoring_{};
   uint16_t publisher_port_{}, server_port_{}, max_msg_per_second_{};
@@ -33,6 +34,7 @@ class BtEngine : public rclcpp::Node
   void configure_parameters();
   void load_tree();
   void run();
+  void run_loop();
   void add_groot_monitoring();
   void load_plugins();
 
